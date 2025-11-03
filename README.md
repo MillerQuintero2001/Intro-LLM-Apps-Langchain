@@ -572,7 +572,7 @@ Estos archivos están en `.gitignore` y se regeneran automáticamente.
 - [Documentación de LangChain](https://python.langchain.com/)
 - [UV Documentation](https://github.com/astral-sh/uv)
 - [OpenAI API Reference](https://platform.openai.com/docs)
-- [DataCamp Course](https://www.datacamp.com/)
+- [DataCamp Course](https://www.datacamp.com/courses/developing-llm-applications-with-langchain)
 
 ---
 
