@@ -26,7 +26,7 @@ time_prompt = PromptTemplate(
 )
 
 # Complete the sequential chain with LCEL (LangChain Expression Language)
-# The chain will receive the input realted with the first element in the chain
+# The chain will receive the input related with the first element in the chain
 # but, the key specified in the chain should be the one expected by the second element
 seq_chain = ({"learning_plan": learning_prompt | llm | StrOutputParser()}
     | time_prompt
