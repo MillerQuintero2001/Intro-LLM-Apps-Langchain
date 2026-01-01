@@ -2,6 +2,7 @@ from langchain_core.tools import tool
 # from langgraph.prebuilt import create_react_agent # DEPRECATED
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
+from langchain_core.prompts import PromptTemplate
 import pandas as pd
 from dotenv import load_dotenv
 import os
@@ -28,7 +29,13 @@ def retrieve_customer_info(name: str) -> str:
 # Create a ReAct agent
 # agent = create_react_agent(llm, [retrieve_customer_info]) # DEPRECATED
 agent = create_agent(llm, [retrieve_customer_info])
+prompt_template = PromptTemplate.from_template("Create a summary of our customer: {customer_name}")
 
 # Invoke the agent on the input
-messages = agent.invoke({"messages": [("human", "Create a summary of our customer: Peak Performance Co.")]})
+messages = agent.invoke({"messages": [("human", prompt_template.format(customer_name="Tech Innovations LLC"))]})
+print(messages["messages"][-1].content)
+
+print("=="*30)
+
+messages = agent.invoke({"messages": [("human", prompt_template.format(customer_name="Peak Performance Co."))]})
 print(messages["messages"][-1].content)
