@@ -7,7 +7,7 @@ llm = HuggingFacePipeline.from_model_id(
     pipeline_kwargs={"max_new_tokens": 40}
 )
 
-prompt = "Hugging Face is..."
+prompt = "The sky is blue, roses are red. I will be..."
 
 # Invoke the model
 response = llm.invoke(prompt)
