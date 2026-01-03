@@ -1,8 +1,9 @@
 # 🦜🔗 LangChain Basic - Developing LLM Applications
 
-![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)
+![Python Version](https://img.shields.io/badge/python-3.13-blue.svg)
 ![LangChain](https://img.shields.io/badge/LangChain-1.0.3-green.svg)
 ![UV](https://img.shields.io/badge/uv-latest-orange.svg)
+![Hugging Face](https://img.shields.io/badge/🤗_Hugging_Face-transformers-yellow.svg)
 
 Repositorio del curso **"Developing LLM Applications with LangChain"** de DataCamp. Este proyecto contiene ejemplos prácticos y ejercicios que cubren los fundamentos de desarrollo de aplicaciones con Large Language Models (LLMs) utilizando el framework LangChain.
 
@@ -38,7 +39,7 @@ Este repositorio contiene implementaciones prácticas de conceptos clave en el d
 
 ## 🔧 Requisitos Previos
 
-- **Python 3.11** o superior
+- **Python 3.13** o superior (compatible con 3.11+)
 - **uv** - Gestor de paquetes y dependencias de Python (escrito en Rust)
 - **OpenAI API Key** - Para usar modelos de OpenAI (GPT-4, GPT-3.5)
 
@@ -63,7 +64,7 @@ git clone <tu-repo-url>
 cd langchain_basic
 ```
 
-2. **Crear entorno virtual con Python 3.11**
+2. **Crear entorno virtual con Python 3.13**
 
 ```bash
 # uv creará automáticamente el .venv con la versión especificada en .python-version
@@ -72,17 +73,24 @@ uv sync
 
 Este comando:
 
-- Lee el archivo `.python-version` (3.11)
+- Lee el archivo `.python-version` (3.13)
 - Crea un entorno virtual en `.venv/`
 - Instala todas las dependencias del `pyproject.toml`
 - Genera/actualiza el `uv.lock` para versiones reproducibles
 
-3. **Verificar la instalación**
+3. **Instalar dependencias adicionales (requirements.txt)**
+
+```bash
+# Algunas dependencias como transformers se instalan por separado
+uv pip install -r requirements.txt
+```
+
+4. **Verificar la instalación**
 
 ```bash
 # Verificar que el entorno esté activo
 uv run python --version
-# Debería mostrar: Python 3.11.x
+# Debería mostrar: Python 3.13.x
 ```
 
 ---
@@ -101,7 +109,7 @@ Edita el archivo `.env` y agrega tu API key:
 
 ```env
 # .env
-OPENAI_API_KEY=sk-proj-tu-api-key-aqui
+OPENAI_API_KEY=<your_api_key_goes_here>
 ```
 
 > ⚠️ **Importante**: Nunca hagas commit del archivo `.env` (ya está en `.gitignore`)
@@ -127,9 +135,10 @@ langchain_basic/
 │
 ├── .env                    # Variables de entorno (NO hacer commit)
 ├── .env.example            # Ejemplo de variables de entorno
-├── .python-version         # Versión de Python (3.11)
+├── .python-version         # Versión de Python (3.13)
 ├── pyproject.toml          # Configuración del proyecto y dependencias
 ├── uv.lock                 # Lock file con versiones exactas
+├── requirements.txt        # Dependencias instaladas con pip (ver nota)
 ├── README.md               # Este archivo
 │
 ├── Chapter_1/              # Fundamentos de LLMs y Prompts
@@ -137,23 +146,24 @@ langchain_basic/
 │   ├── prompt_template.py  # Plantillas de prompts básicas
 │   ├── chat_prompt.py      # Chat prompts con contexto
 │   ├── few_shoot.py        # Few-shot learning
-│   └── hugging_face.py     # Uso de modelos de Hugging Face
+│   └── hugging_face.py     # Uso de modelos de Hugging Face (local)
 │
 ├── Chapter_2/              # Chains y Agents
 │   ├── sequential_chains.py # Cadenas secuenciales con LCEL
-│   ├── tools_intro.py      # Herramientas personalizadas
+│   ├── tools_intro.py      # Herramientas personalizadas con múltiples ejemplos
 │   └── react_intro.py      # Agentes ReAct con Wikipedia
 │
 └── Chapter_3/              # RAG y Document Processing
     ├── char_splitter.py            # Text splitting por caracteres
     ├── recursive_splitter.py       # Text splitting recursivo
-    ├── csv_loader.py               # Cargar documentos CSV
+    ├── csv_loader.py               # Cargar documentos CSV (con output detallado)
     ├── html_loader.py              # Cargar documentos HTML
     ├── pdf_loader.py               # Cargar documentos PDF
-    ├── docs_splitter.py            # Splitting de documentos
+    ├── docs_splitter.py            # Splitting de documentos HTML
     ├── rag_intro.py                # RAG completo con Chroma
-    ├── fifa_countries_audience.csv # Datos de ejemplo
-    └── white_house_executive_order_nov_2023.html # Documento de ejemplo
+    ├── fifa_countries_audience.csv # Datos de ejemplo (audiencia FIFA)
+    ├── rag_vs_fine_tuning.pdf      # PDF de ejemplo para RAG
+    └── white_house_executive_order_nov_2023.html # Documento HTML de ejemplo
 ```
 
 ---
@@ -224,16 +234,19 @@ Aprendizaje con ejemplos para guiar las respuestas del LLM.
 
 #### 5️⃣ `hugging_face.py` - Modelos de Hugging Face
 
-Uso de modelos open-source desde Hugging Face Hub.
+Uso de modelos open-source desde Hugging Face Hub ejecutados **localmente**.
 
 ```python
 # Características:
-- HuggingFacePipeline
-- Modelos locales
-- Configuración de parámetros de generación
+- HuggingFacePipeline para modelos locales
+- Modelo ligero: crumb/nano-mistral
+- Configuración de parámetros de generación (max_new_tokens)
+- Sin necesidad de API key (ejecución local)
 ```
 
-**Conceptos**: Modelos open-source, Hugging Face, pipelines
+**Conceptos**: Modelos open-source, Hugging Face, pipelines locales, inferencia sin API
+
+**Dependencias requeridas**: `langchain-huggingface`, `transformers`
 
 ---
 
@@ -257,17 +270,18 @@ Encadenamiento de múltiples prompts de forma secuencial.
 
 #### 2️⃣ `tools_intro.py` - Herramientas Personalizadas
 
-Creación de herramientas personalizadas para agentes.
+Creación de herramientas personalizadas para agentes con múltiples ejemplos de uso.
 
 ```python
 # Características:
-- Decorador @tool
-- Funciones Python como herramientas
+- Decorador @tool para definir herramientas
+- Funciones Python como herramientas para agentes
 - Integración con pandas DataFrames
-- Agentes con herramientas custom
+- PromptTemplate para formatear queries
+- Múltiples invocaciones de ejemplo (Tech Innovations LLC, Peak Performance Co.)
 ```
 
-**Conceptos**: Custom tools, function calling, agentes con datos externos
+**Conceptos**: Custom tools, function calling, agentes con datos externos, reutilización de prompts
 
 ---
 
@@ -278,12 +292,13 @@ Agentes que razonan y actúan con herramientas externas.
 ```python
 # Características:
 - create_agent (ReAct pattern)
-- Wikipedia tool
+- Wikipedia tool para búsqueda de información
+- HumanMessage para invocación idiomática de LangChain
+- Parámetros de reproducibilidad (temperature=0.1, seed=42)
 - Razonamiento paso a paso
-- Invocación con mensajes
 ```
 
-**Conceptos**: ReAct agents, tool usage, reasoning & acting, Wikipedia integration
+**Conceptos**: ReAct agents, tool usage, reasoning & acting, Wikipedia integration, reproducibilidad
 
 ---
 
@@ -321,16 +336,17 @@ Splitting recursivo con jerarquía de separadores.
 
 #### 3️⃣ `csv_loader.py` - CSV Document Loader
 
-Carga de datos estructurados desde archivos CSV.
+Carga de datos estructurados desde archivos CSV con output detallado.
 
 ```python
 # Características:
-- CSVLoader
-- Rutas absolutas con Path(__file__)
-- Carga independiente del directorio de ejecución
+- CSVLoader para archivos tabulares
+- Rutas absolutas con Path(__file__) para ejecución independiente
+- Output formateado mostrando las primeras 3 filas
+- Visualización de content y metadata separados
 ```
 
-**Conceptos**: Document loaders, structured data, file loading
+**Conceptos**: Document loaders, structured data, file loading, metadata extraction
 
 **Datos**: `fifa_countries_audience.csv` - Datos de audiencia de países FIFA
 
@@ -370,16 +386,18 @@ Carga de documentos PDF con metadata.
 
 #### 6️⃣ `docs_splitter.py` - Document Splitting
 
-Splitting de documentos cargados.
+Splitting de documentos HTML cargados con separadores optimizados.
 
 ```python
 # Características:
-- Carga de HTML
+- Carga de HTML con UnstructuredHTMLLoader
 - RecursiveCharacterTextSplitter en documentos
-- Split con separadores personalizados
+- Jerarquía de separadores optimizada: ['\n\n', '\n', '. ', '.', ' ', '']
+- Output formateado con longitud de cada chunk
+- Visualización del primer chunk como ejemplo
 ```
 
-**Conceptos**: Document processing pipeline, splitting loaded documents
+**Conceptos**: Document processing pipeline, splitting loaded documents, separator optimization
 
 ---
 
@@ -389,12 +407,13 @@ Splitting de documentos cargados.
 
 ```python
 # Características:
-- Carga de PDF (PyPDFLoader)
+- Carga de PDF (PyPDFLoader) - rag_vs_fine_tuning.pdf
 - Splitting de documentos (RecursiveCharacterTextSplitter)
 - Embeddings con OpenAI (text-embedding-3-small)
-- Vector store con Chroma (persistente)
-- Retriever con similarity search
+- Vector store con Chroma (persistente en directorio actual)
+- Retriever con similarity search (k=3 documentos)
 - RAG chain con LCEL
+- RunnablePassthrough para pasar la pregunta directamente
 - Generación de respuestas contextualizadas
 ```
 
@@ -406,7 +425,9 @@ Splitting de documentos cargados.
 6. Generate Answer with Context
 ```
 
-**Conceptos**: RAG, embeddings, vector stores, Chroma, similarity search, retrieval chains
+**Conceptos**: RAG, embeddings, vector stores, Chroma, similarity search, retrieval chains, RunnablePassthrough
+
+**Datos**: `rag_vs_fine_tuning.pdf` - Paper comparando RAG vs Fine-tuning
 
 ---
 
@@ -484,10 +505,12 @@ dependencies = [
     "langchain>=1.0.3",              # Framework principal
     "langchain-chroma>=1.0.0",       # Vector store con Chroma
     "langchain-community>=0.4.1",    # Loaders y tools comunitarios
+    "langchain-huggingface>=1.2.0",  # Integración con Hugging Face
     "langchain-openai>=1.0.1",       # Integración con OpenAI
     "pandas>=2.3.3",                 # Manipulación de datos
     "pypdf>=6.1.3",                  # Procesamiento de PDFs
     "python-dotenv>=1.2.1",          # Manejo de variables de entorno
+    "transformers>=4.57.3",          # Modelos de Hugging Face (PyTorch)
     "unstructured>=0.18.15",         # Procesamiento de docs no estructurados
     "wikipedia>=1.4.0",              # API de Wikipedia para agentes
 ]
@@ -517,7 +540,7 @@ uv lock --upgrade
 
 - **uv** es un gestor de paquetes de Python escrito en Rust, extremadamente rápido
 - Reemplaza `pip`, `pip-tools`, `virtualenv` y `poetry` en uno solo
-- `uv sync` instala las dependencias **físicamente** en `.venv/lib/python3.11/site-packages/`
+- `uv sync` instala las dependencias **físicamente** en `.venv/lib/python3.13/site-packages/`
 - El `uv.lock` garantiza builds reproducibles (como `package-lock.json` en npm)
 
 ### Flujo de Trabajo con `uv`
@@ -525,6 +548,30 @@ uv lock --upgrade
 1. **Agregar dependencia**: `uv add <paquete>` → Actualiza `pyproject.toml`
 2. **Sincronizar**: `uv sync` → Instala en `.venv/`
 3. **Ejecutar**: `uv run <script.py>` → Ejecuta con el entorno correcto
+
+### `uv add` vs `uv pip install`
+
+⚠️ **Importante**: Existen dos formas de instalar paquetes con `uv`:
+
+| Comando | Comportamiento | Persistencia |
+|---------|----------------|---------------|
+| `uv add <paquete>` | Agrega al `pyproject.toml` y al `uv.lock` | ✅ Persiste con `uv sync` |
+| `uv pip install <paquete>` | Instala directamente en `.venv` | ❌ Se borra con `uv sync` |
+
+**En este proyecto**:
+- La mayoría de dependencias están en `pyproject.toml` (instaladas con `uv add`)
+- `transformers` y sus dependencias están en `requirements.txt` (instaladas con `uv pip install`)
+
+**¿Por qué?** Algunas librerías como `transformers` pueden tener conflictos de resolución de dependencias con `uv add`. En esos casos, se instalan con `uv pip install` y se documentan en `requirements.txt`.
+
+**Para instalar todo el proyecto**:
+```bash
+# 1. Instalar dependencias del pyproject.toml
+uv sync
+
+# 2. Instalar dependencias adicionales del requirements.txt
+uv pip install -r requirements.txt
+```
 
 ### Rutas Absolutas
 
