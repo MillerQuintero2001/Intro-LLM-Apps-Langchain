@@ -12,6 +12,6 @@ splitter = CharacterTextSplitter(
 )
 
 # Split the string and print the chunks
-docs =splitter.split_text(quote)
+docs = splitter.split_text(quote)
 print(docs)
 print([len(doc) for doc in docs])

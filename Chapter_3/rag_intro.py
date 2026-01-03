@@ -66,5 +66,6 @@ rag_chain = ({"context": retriever, "question": RunnablePassthrough()}
             | llm)
 
 # Invoke the chain
+# NOTE: Is not necessary to specify the key "question" cause it's the default input key thanks to RunnablePassthrough
 response = rag_chain.invoke("What is the most important use case of RAG in Agriculture according to the paper?")
 print(response.content)

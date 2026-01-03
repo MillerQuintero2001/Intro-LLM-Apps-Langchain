@@ -18,9 +18,12 @@ chunk_overlap = 100
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=chunk_size,
     chunk_overlap=chunk_overlap,
-    separators=['.'])
+    separators=['\n\n', '\n', '. ', '.', ' ', '']
+)
 
 docs = splitter.split_documents(data)
-print(docs[0])
+print("=="*20 + "Only the first chunk" + "=="*20)
+print(f"Page content: '{docs[0].page_content}'")
+print(f"\nMetadata: {docs[0].metadata}")
 print("\n\nLa longitud de cada chunk es:")
 print([len(doc.page_content) for doc in docs])
