@@ -11,7 +11,7 @@ loader = CSVLoader(str(csv_path))
 # Load the document
 data = loader.load()
 
-print(f"First 3 rows of the CSV, content and metadata:\n")
+print("First 3 rows of the CSV, content and metadata:\n")
 for i in range(3):
     print(f"Content:{data[i].page_content}")
     print(f"\nMetadata: {data[i].metadata}")
