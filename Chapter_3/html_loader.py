@@ -10,6 +10,5 @@ loader = UnstructuredHTMLLoader(str(html_path))
 
 # Load the document
 data = loader.load()
-print(data[0])
-
+print(f"Content: '{data[0].page_content}'")
 print(f"\n\nMetadata: {data[0].metadata}")

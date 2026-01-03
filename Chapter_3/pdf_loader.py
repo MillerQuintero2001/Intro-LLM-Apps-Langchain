@@ -10,6 +10,6 @@ loader = PyPDFLoader(str(pdf_path))
 
 # Load the document
 data = loader.load()
-print(data[0])
+print(data[0].page_content)
 
 print(f"\n\nMetadata: {data[0].metadata}")
